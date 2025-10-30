@@ -2,7 +2,9 @@ import 'package:disleksi_surum/utils/colors.dart';
 import 'package:disleksi_surum/view/time_and_yon/asansor_view.dart';
 import 'package:disleksi_surum/view/time_and_yon/days_view.dart';
 import 'package:disleksi_surum/view/time_and_yon/k%C4%B1s_views.dart';
+import 'package:disleksi_surum/view/time_and_yon/month.dart';
 import 'package:disleksi_surum/view/time_and_yon/sagsol_view.dart';
+import 'package:disleksi_surum/view/time_and_yon/week_days.dart';
 import 'package:flutter/material.dart';
 import '../ortak_bosluk/yonerge.dart';
 
@@ -33,7 +35,7 @@ class ZamanMenuView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const Yonerge(text: "Mevsimleri Öğrenelelim", page: KisViews()),
+                        builder: (_) => const Yonerge(text: "Mevsimleri Öğrenelim", page: KisViews()),
                       ),
                     );
                   }),
@@ -61,21 +63,21 @@ class ZamanMenuView extends StatelessWidget {
                       ),
                     );
                   }),
-                  _buildHomeButton(context, 'Oyun 5', Icons.videogame_asset, () {
-                    /*  Navigator.push(
+                  _buildHomeButton(context, 'Haftanın Günleri', Icons.videogame_asset, () {
+                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const LeftRightGamePage(),
+                        builder: (_) => Yonerge(text: "Haftanın günlerini sıraya dizelim", page: WeekDays()),
                       ),
-                    );*/
+                    );
                   }),
-                  _buildHomeButton(context, 'Oyun 6', Icons.brush, () {
-                    /* Navigator.push(
+                  _buildHomeButton(context, 'Aylar', Icons.brush, () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const LetterTracePage(),
+                        builder: (_) => Yonerge(text: "Ayları sıraya dizelim", page: Months()),
                       ),
-                    );*/
+                    );
                   }),
                 ],
               ),

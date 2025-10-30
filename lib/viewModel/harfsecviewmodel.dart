@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 class SecViewModel extends ChangeNotifier {
   String harf = 'D';
   bool dogru = false;
-  bool tiklandi = false;
+  int totalClicks = 0;
+  final int correctClicks = 1;
   List<String> secenekler = [];
 
   SecViewModel() {
@@ -12,20 +13,31 @@ class SecViewModel extends ChangeNotifier {
   }
 
   void DKontrol(String secilenHarf) {
+    totalClicks++;
     dogru = (secilenHarf == harf);
-    tiklandi = true;
     notifyListeners();
   }
 
   void karistir() {
-    secenekler = ['B', harf];
+    if (harf !='U' && harf !='M' && harf != 'N') {
+      if(harf !='B') {
+        secenekler = ['B', harf];
+      }else{
+        secenekler =['P',harf];
+      }
+    }else if(harf !='P' && harf !='B' && harf != 'D') {
+      if(harf !='U'){
+        secenekler =['U',harf];
+      }else{
+        secenekler =['N',harf];
+      }
+    }
     secenekler.shuffle(Random());
     notifyListeners();
   }
 
   void reset() {
     dogru = false;
-    tiklandi = false;
     notifyListeners();
   }
 }

@@ -2,11 +2,26 @@ import 'dart:math';
 import 'package:disleksi_surum/view/time_and_yon/yaz_views.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
 import '../../viewModel/mevsim_view_model.dart';
 import '../../viewModel/tts_view_model.dart';
-class KisViews extends StatelessWidget {
+class KisViews extends StatefulWidget {
   const KisViews({super.key});
 
+  @override
+  State<KisViews> createState() => _KisViewsState();
+}
+
+class _KisViewsState extends State<KisViews> {
+  @override
+  void initState() {
+    super.initState();
+    // Timer başlat
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
+  }
   @override
   Widget build(BuildContext context) {
     double screenw = MediaQuery.sizeOf(context).width;
@@ -77,11 +92,23 @@ class KisViews extends StatelessWidget {
           width: 150,
           height: 50,
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async{
               final vm = Provider.of<MevsimViewModel>(context,listen: false);
               vm.kontrol(label, dogruCevap);
 
               if (vm.iskontrol) {
+                final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+                timerVM.stopTimer();
+
+                final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+                await vm2.saveGameResult(
+                  letter: 'mevsim',
+                  totalClicks: vm.totalClicks,
+                  correctClicks: vm.correctClicks,
+                  durationseconds: timerVM.totalSeconds,
+                  koleksiyonadi: 'zaman-yön',
+                );
+                vm.reset();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const YazViews()),

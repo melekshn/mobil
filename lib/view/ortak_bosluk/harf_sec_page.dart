@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../utils/colors.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
 import '../../viewModel/harfsecviewmodel.dart';
 import '../../viewModel/tts_view_model.dart';
 
@@ -156,12 +158,25 @@ class HarfSecSayfa extends StatelessWidget {
       width: 80,
       height: 80,
       child: OutlinedButton(
-        onPressed: () {
+        onPressed: () async{
           dvm.DKontrol(harf);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => sonrakiSayfa),
-          ).then((_) => dvm.reset());
+          if (dvm.dogru) {
+            final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+            timerVM.stopTimer();
+
+            final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+            await vm2.saveGameResult(
+              letter: dvm.harf,
+              totalClicks: dvm.totalClicks,
+              correctClicks: dvm.correctClicks,
+              durationseconds: timerVM.totalSeconds,
+                koleksiyonadi: 'Harfler'
+            );
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => sonrakiSayfa),
+            ).then((_) => dvm.reset());
+          }
         },
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Colors.green, width: 2),

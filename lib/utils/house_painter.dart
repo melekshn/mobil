@@ -62,8 +62,8 @@ class HousePainter extends CustomPainter {
     _drawText(canvas, "0", Offset(200, 250));
     _drawText(canvas, "8", Offset(200, 150));
     _drawText(canvas, "3", Offset(200, 330));
-    _drawText(canvas, "9", Offset(370, 240));
-    _drawText(canvas, "7", Offset(140, 250)); // pencere
+    _drawText(canvas, "2", Offset(370, 240));
+    _drawText(canvas, "5", Offset(140, 250)); // pencere
   }
 
   void _drawText(Canvas canvas, String text, Offset offset) {
@@ -91,4 +91,3 @@ class HousePainter extends CustomPainter {
         oldDelegate.windowColor != windowColor;
   }
 }
-

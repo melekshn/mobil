@@ -8,7 +8,12 @@ class LeftRightViewModel extends ChangeNotifier {
   final double _moveStep = 50.0;
   double _characterPosition = 50.0;
   String _storyText = "Karakter bal kavanozuna ulaşmak istiyor!";
+  int sayac = 0;
 
+  VoidCallback? onGameCompleted;
+
+
+  bool _storyStepCompleted = false;
   double get characterPosition => _characterPosition;
   double get targetPosition => _targetPosition;
   String get storyText => _storyText;
@@ -27,7 +32,8 @@ class LeftRightViewModel extends ChangeNotifier {
   }
 
   void _checkStoryStep(double? maxPosition) {
-    if ((_characterPosition - _targetPosition).abs() < 10) {
+    if ((_characterPosition - _targetPosition).abs() < 10 && sayac < 3) {
+      sayac++;
       _storyText = "Tebrikler! Karakter bal kavanozuna ulaştı 🍯";
 
       if (maxPosition != null) {
@@ -37,6 +43,14 @@ class LeftRightViewModel extends ChangeNotifier {
       }
 
       notifyListeners();
+
+      if(sayac == 3){
+        _storyText = "Oyun bitti! 🏆";
+        if (onGameCompleted != null) {
+          onGameCompleted!(); // callback ile sayfa geçişi
+        }
+      }
     }
   }
+
 }

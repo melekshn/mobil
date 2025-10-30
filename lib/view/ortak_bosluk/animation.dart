@@ -1,16 +1,15 @@
-import 'package:disleksi_surum/view/p/p_bul/p_1.dart';
+import 'package:disleksi_surum/utils/listname.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import '../../viewModel/video_view_model.dart';
 import 'package:provider/provider.dart';
 
-class PStart extends StatelessWidget {
+import 'Ders1.dart';
+
+class Start extends StatelessWidget {
   final String video;
-  final String hedef;
-  final List<String> dogrulink;
-  final List<String> linkler;
-  final String mesaj;
-  const PStart({super.key,required this.video,required this.hedef,required this.dogrulink,required this.linkler,required this.mesaj});
+  final String harf;
+  const Start({super.key,required this.video,required this.harf});
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +36,7 @@ class PStart extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => PDers1(hedefHarf: hedef,
-                    dogruHarfResimleri: dogrulink,
-                    digerHarfResimleri:linkler,
-                    mesaj: mesaj,),
+                  builder: (_) => Ders1(list: listem['$harf']!,index: 0,),
                 ),
               );
             });

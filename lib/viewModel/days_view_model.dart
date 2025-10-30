@@ -5,6 +5,7 @@ class ActivityCard {
   final String title;
   final TimeCategory category;
 
+
   ActivityCard(this.title, this.category);
 }
 
@@ -13,6 +14,10 @@ enum TimeCategory { YESTERDAY, TODAY, TOMORROW }
 class TimeTrainViewModel with ChangeNotifier {
   final FlutterTts tts = FlutterTts();
   TimeCategory currentFocus = TimeCategory.TODAY;
+  int totalClicks = 0;
+  final int correctClicks = 7;
+
+  bool hasNavigated = false;
 
   List<ActivityCard> allActivities = [
     ActivityCard("Parkta oynadım", TimeCategory.YESTERDAY),
@@ -61,17 +66,21 @@ class TimeTrainViewModel with ChangeNotifier {
   }
 
   bool handleCardDrop(ActivityCard card, TimeCategory targetVagon) {
+
     if (card.category == targetVagon) {
       draggableCards.remove(card);
       switch (targetVagon) {
         case TimeCategory.YESTERDAY:
           placedYesterday.add(card);
+          totalClicks++;
           break;
         case TimeCategory.TODAY:
           placedToday.add(card);
+          totalClicks++;
           break;
         case TimeCategory.TOMORROW:
           placedTomorrow.add(card);
+          totalClicks++;
           break;
       }
 
@@ -82,6 +91,9 @@ class TimeTrainViewModel with ChangeNotifier {
       speak("Tekrar dene! Bu etkinlik yanlış vagona ait.");
       return false;
     }
+  }
+  void reset(){
+    totalClicks = 0;
   }
 
   bool get isGameComplete => draggableCards.isEmpty;

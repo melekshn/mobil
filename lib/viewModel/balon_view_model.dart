@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class BalonViewModel extends ChangeNotifier {
+  int totalClicks = 0;
+  final int correctClicks = 6;
   late List<String> harfler;
   late List<String> tablo;
   late List<Color?> renkler;
@@ -111,5 +113,6 @@ class BalonViewModel extends ChangeNotifier {
         });
       }
     }
+    totalClicks++;
   }
 }

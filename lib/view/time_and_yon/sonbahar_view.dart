@@ -4,9 +4,26 @@ import 'package:disleksi_surum/viewModel/mevsim_view_model.dart';
 import 'package:disleksi_surum/viewModel/tts_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-class SonbaharView extends StatelessWidget {
+
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
+import '../ortak_bosluk/yonerge.dart';
+class SonbaharView extends StatefulWidget {
   const SonbaharView({super.key});
 
+  @override
+  State<SonbaharView> createState() => _SonbaharViewState();
+}
+
+class _SonbaharViewState extends State<SonbaharView> {
+  @override
+  void initState() {
+    super.initState();
+    // Timer başlat
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
+  }
   @override
   Widget build(BuildContext context) {
     double screenw = MediaQuery.sizeOf(context).width;
@@ -77,14 +94,28 @@ class SonbaharView extends StatelessWidget {
           width: 150,
           height: 50,
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: ()async {
               final vm = Provider.of<MevsimViewModel>(context,listen: false);
               vm.kontrol(label, dogruCevap);
 
               if (vm.iskontrol) {
+                final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+                timerVM.stopTimer();
+
+                final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+                await vm2.saveGameResult(
+                  letter: 'mevsim',
+                  totalClicks: vm.totalClicks,
+                  correctClicks: vm.correctClicks,
+                  durationseconds: timerVM.totalSeconds,
+                  koleksiyonadi: 'zaman-yön',
+                );
+                vm.reset();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const TimeTrainScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const Yonerge(text: "Günleri Öğrenelim", page: TimeTrainScreen()),
+                ),
                 );
               }
             },

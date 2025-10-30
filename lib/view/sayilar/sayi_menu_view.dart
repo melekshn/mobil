@@ -2,7 +2,7 @@ import 'package:disleksi_surum/utils/colors.dart';
 import 'package:disleksi_surum/view/sayilar/card_sayi.dart';
 import 'package:disleksi_surum/view/sayilar/farklisayi.dart';
 import 'package:flutter/material.dart';
-import 'apple_number_game_view.dart';
+import '../ortak_bosluk/yonerge.dart';
 import 'egg_input_page.dart';
 import 'modern_bear_head_view.dart';
 
@@ -29,27 +29,19 @@ class MenuViewSayi extends StatelessWidget {
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
                 children: [
-                  _buildHomeButton(context, 'Boyama', Icons.abc, () {
+                  _buildHomeButton(context, 'Boyama', Icons.brush, () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const ModernBearHeadView(),
+                        builder: (_) => const Yonerge(text:"Boyama yapmaya ne dersin ?", page: ModernBearHeadView()),
                       ),
                     );
                   }),
-                  _buildHomeButton(context, 'Kaç yumurta ?', Icons.search, () {
+                  _buildHomeButton(context, 'Kaç yumurta ?', Icons.question_mark, () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const EggInputPage(),
-                      ),
-                    );
-                  }),
-                  _buildHomeButton(context, 'Elmaları toplayalım', Icons.question_mark, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AppleNumberGame(),
+                        builder: (_) => const Yonerge(text:"Her kümeste kaç yumurta olduğunu yazar mısın ?", page: EggInputPage()),
                       ),
                     );
                   }),
@@ -57,15 +49,15 @@ class MenuViewSayi extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const SayiFark(),
+                        builder: (_) => const Yonerge(text:"Farklı olan sayı hangisi?", page: SayiFark()),
                       ),
                     );
                   }),
-                  _buildHomeButton(context, 'Ters Sayılar!', Icons.touch_app, (){
+                  _buildHomeButton(context, 'Ters Sayılar!', Icons.compare_arrows_sharp, (){
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const CardPage(),
+                        builder: (_) => Yonerge(text:"Farklı olan sayı hangisi?", page: RapidRecognitionScreen()),
                       ),
                     );
                   }),

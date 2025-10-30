@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../utils/colors.dart';
 import '../../viewModel/balon_view_model.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
 
 class HarfBulPage extends StatefulWidget {
   final String hedefHarf;
@@ -28,6 +30,9 @@ class _HarfBulPageState extends State<HarfBulPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
   }
 
   @override
@@ -63,13 +68,13 @@ class _HarfBulPageState extends State<HarfBulPage> {
             body: Stack(
               children: [
                 Container(
-                    width: MediaQuery.sizeOf(context).width,
-                    height: MediaQuery.sizeOf(context).height,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(image: AssetImage(
-                            'assets/images/background.png'
-                        ),fit: BoxFit.cover)
-                    ),
+                  width: MediaQuery.sizeOf(context).width,
+                  height: MediaQuery.sizeOf(context).height,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(image: AssetImage(
+                          'assets/images/background.png'
+                      ),fit: BoxFit.cover)
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -96,7 +101,23 @@ class _HarfBulPageState extends State<HarfBulPage> {
                             itemBuilder: (context, index) {
                               final color = vm.renkler[index];
                               return GestureDetector(
-                                onTap: () => vm.kontrolEt(index, context),
+                                onTap: () async{
+                                  vm.kontrolEt(index, context);
+                                  if(vm.ballon==0){
+                                    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+                                    timerVM.stopTimer();
+
+                                    final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+                                    await vm2.saveGameResult(
+                                      letter: widget.hedefHarf,
+                                      totalClicks: vm.totalClicks,
+                                      correctClicks: vm.correctClicks,
+                                      durationseconds: timerVM.totalSeconds,
+                                      koleksiyonadi: 'Harfler'
+                                    );
+                                  }
+
+                                  } ,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: color ?? Colors.white,

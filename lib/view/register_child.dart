@@ -42,7 +42,6 @@ class _CocukKayitPageState extends State<CocukKayitPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Expanded(child: Container()),
-
                   Container(
                     width: widthscreen,
                     padding: const EdgeInsets.all(16.0),

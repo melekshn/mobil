@@ -1,10 +1,28 @@
+import 'package:disleksi_surum/view/time_and_yon/zaman_menu_views.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
 import '../../viewModel/sagsol_view_model.dart';
 
-class LeftRightGamePage extends StatelessWidget {
+class LeftRightGamePage extends StatefulWidget {
   const LeftRightGamePage({Key? key}) : super(key: key);
 
+  @override
+  State<LeftRightGamePage> createState() => _LeftRightGamePageState();
+}
+
+class _LeftRightGamePageState extends State<LeftRightGamePage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,6 +30,26 @@ class LeftRightGamePage extends StatelessWidget {
         builder: (context, viewModel, _) {
           final screenWidth = MediaQuery.of(context).size.width;
           final maxPosition = screenWidth - viewModel.boxWidth - 20;
+
+
+          viewModel.onGameCompleted = () async{
+            final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+            timerVM.stopTimer();
+
+            final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+            await vm2.saveGameResult(
+                letter: 'ayı-sağ-sol',
+                totalClicks: 0,
+                correctClicks: 0,
+                durationseconds: timerVM.totalSeconds,
+                koleksiyonadi: 'zaman-yön'
+            );
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => const ZamanMenuView(), // yeni sayfan
+              ),
+            );
+          };
 
           return Stack(
             children: [

@@ -2,10 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/bear_viewmodel.dart';
 import '../../utils/cute_bear_painter.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
 import 'house_view.dart';
 
-class ModernBearHeadView extends StatelessWidget {
+class ModernBearHeadView extends StatefulWidget {
   const ModernBearHeadView({super.key});
+
+  @override
+  State<ModernBearHeadView> createState() => _ModernBearHeadViewState();
+}
+
+class _ModernBearHeadViewState extends State<ModernBearHeadView> {
+  @override
+  void initState() {
+    super.initState();
+    // Timer başlat
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +41,18 @@ class ModernBearHeadView extends StatelessWidget {
                         details.localPosition,
                         const Size(400, 400),
                             () {
-                              Future.delayed(const Duration(seconds: 2), () {
+                              Future.delayed(const Duration(seconds: 2), () async{
+                                final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+                                timerVM.stopTimer();
+
+                                final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+                                await vm2.saveGameResult(
+                                  letter: 'boyama_ayi',
+                                  totalClicks: viewModel.totalClicks,
+                                  correctClicks: viewModel.correctClicks,
+                                  durationseconds: timerVM.totalSeconds,
+                                    koleksiyonadi: 'Sayilar'
+                                );
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (_) => const HouseView(),

@@ -34,9 +34,9 @@ class _ColorfulTextPageState extends State<ColorfulTextPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFAA80),
+      backgroundColor: const Color(0xFFECD5BC),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFAA80),
+        backgroundColor: const Color(0xFFECD5BC),
         title: const Text("Bunları Biliyor Musun ?"),
       ),
       body: GridView.builder(

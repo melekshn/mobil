@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../../utils/hikayeler.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
+import 'okuma_menu.dart';
 
-class ReadingPage extends StatelessWidget {
+class ReadingPage extends StatefulWidget {
   final int storyIndex;
 
   const ReadingPage({super.key, required this.storyIndex});
@@ -12,6 +16,20 @@ class ReadingPage extends StatelessWidget {
     'd': Color(0xFF9400FF),
     'p': Color(0xFF059212),
   };
+
+  @override
+  State<ReadingPage> createState() => _ReadingPageState();
+}
+
+class _ReadingPageState extends State<ReadingPage> {
+  @override
+  void initState() {
+    super.initState();
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Ekranı dikey moda sabitle
@@ -20,7 +38,7 @@ class ReadingPage extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    final story = stories[storyIndex];
+    final story = stories[widget.storyIndex];
 
     // Metni kelimelere ayır
     final words = story.text.split(' ');
@@ -31,7 +49,7 @@ class ReadingPage extends StatelessWidget {
       // Her kelimedeki harfleri kontrol et
       List<TextSpan> letterSpans = word.split('').map((char) {
         final lowerChar = char.toLowerCase();
-        final color = highlightColors[lowerChar] ?? Colors.black;
+        final color = ReadingPage.highlightColors[lowerChar] ?? Colors.black;
         return TextSpan(
           text: char,
           style: TextStyle(
@@ -45,7 +63,7 @@ class ReadingPage extends StatelessWidget {
 
       // Her kelimeden sonra bir boşluk ekle
       textSpans.add(TextSpan(children: letterSpans));
-      textSpans.add(const TextSpan(text: ' '));
+      textSpans.add(const TextSpan(text: '      '));
     }
 
     return Container(
@@ -60,16 +78,35 @@ class ReadingPage extends StatelessWidget {
     backgroundColor: Colors.transparent,
     body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 100,right: 16,left: 16,bottom: 16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            color: const Color(0xFFEDD1B0),
-          ),
-          padding: const EdgeInsets.only(top: 30,right: 16,left: 16,bottom: 16),
-          child: RichText(
-            textAlign: TextAlign.start,
-            text: TextSpan(children: textSpans),
-          ),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: const Color(0xFFEDD1B0),
+              ),
+              padding: const EdgeInsets.only(top: 30,right: 16,left: 16,bottom: 16),
+              child: RichText(
+                textAlign: TextAlign.start,
+                text: TextSpan(children: textSpans),
+              ),
+            ),
+            ElevatedButton(onPressed: ()async{
+              final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+              timerVM.stopTimer();
+
+              final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+              await vm2.saveGameResult(
+                letter: 'Okuma',
+                totalClicks: 0,
+                correctClicks: 0,
+                durationseconds: timerVM.totalSeconds,
+                koleksiyonadi: 'okuma1',
+              );
+              timerVM.totalSeconds=0;
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>ColorfulTextPage()));
+            }, child: Text('GERİ')),
+          ],
         ),
       ),
     ),

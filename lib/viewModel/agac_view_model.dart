@@ -2,7 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class agacViewModel extends ChangeNotifier {
-  late List<String> textlist;
+  int totalClicks = 0;
+  final int correctClicks = 5;
+  List<String> textlist = [];
   late String hedefHarf; // hangi harfi toplayacağız
   List<bool> visibleList = []; // hangi butonlar görünür
   List<String> _basket = [];
@@ -27,5 +29,6 @@ class agacViewModel extends ChangeNotifier {
       _basket.add(textlist[index]);
       notifyListeners();
     }
+    totalClicks++;
   }
 }

@@ -1,7 +1,8 @@
 import 'package:disleksi_surum/view/home_harf.dart';
+import 'package:disleksi_surum/view/okuma_ses/write_menu_view.dart';
 import 'package:disleksi_surum/view/play_views/menu_views.dart';
 import 'package:disleksi_surum/view/sayilar/sayi_menu_view.dart';
-import 'package:disleksi_surum/view/ses/ses_menu_view.dart';
+import 'package:disleksi_surum/view/okuma_ses/ses_menu_view.dart';
 import 'package:disleksi_surum/view/time_and_yon/zaman_menu_views.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +47,7 @@ class AnasayfaPage extends StatelessWidget {
                 buildCategory(context, vm, 'zaman-yon', 'Zamanları Öğrenelim', buttonWidth, buttonHeight, iconSize,ZamanMenuView()),
                 buildCategory(context, vm, 'okuma', 'Okuma Yapalım', buttonWidth, buttonHeight, iconSize,ColorfulTextPage()),
                 buildCategory(context, vm, 'dinleme', 'Dinleme Yapalım', buttonWidth, buttonHeight, iconSize,MenuViewSes()),
+                buildCategory(context, vm, 'yazma', 'Yazı Yazalım', buttonWidth, buttonHeight, iconSize,MenuViewWrite()),
               ],
             ),
           ),

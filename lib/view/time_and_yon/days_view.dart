@@ -1,8 +1,12 @@
+import 'package:disleksi_surum/view/time_and_yon/asansor_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/days_view_model.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
+import '../ortak_bosluk/yonerge.dart';
 
-class TrainVagon extends StatelessWidget {
+class TrainVagon extends StatefulWidget {
   final TimeCategory category;
   final String label;
   final Color color;
@@ -16,15 +20,29 @@ class TrainVagon extends StatelessWidget {
   });
 
   @override
+  State<TrainVagon> createState() => _TrainVagonState();
+}
+
+class _TrainVagonState extends State<TrainVagon> {
+  @override
+  void initState() {
+    super.initState();
+    // Timer başlat
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
+  }
+  @override
   Widget build(BuildContext context) {
     final vm = Provider.of<TimeTrainViewModel>(context, listen: false);
     final screenHeight = MediaQuery.of(context).size.height;
     final vagonHeight = screenHeight / 4;
 
     return DragTarget<ActivityCard>(
-      onAcceptWithDetails: (details) {
+      onAcceptWithDetails: (details) async{
         final card = details.data;
-        if (vm.handleCardDrop(card, category)) {
+        if (vm.handleCardDrop(card, widget.category)) {
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("🎉 ${card.title} doğru yere yerleştirildi!"),
@@ -40,7 +58,7 @@ class TrainVagon extends StatelessWidget {
           height: vagonHeight,
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.9),
+            color: widget.color.withAlpha(200),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: candidateData.isNotEmpty ? Colors.yellowAccent : Colors.transparent,
@@ -49,14 +67,14 @@ class TrainVagon extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(label,
+              Text(widget.label,
                   style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
               const Divider(color: Colors.white70),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
-                    children: placedCards
+                    children: widget.placedCards
                         .map((card) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2.0),
                       child: Chip(
@@ -77,9 +95,14 @@ class TrainVagon extends StatelessWidget {
   }
 }
 
-class TimeTrainScreen extends StatelessWidget {
+class TimeTrainScreen extends StatefulWidget {
   const TimeTrainScreen({Key? key}) : super(key: key);
 
+  @override
+  State<TimeTrainScreen> createState() => _TimeTrainScreenState();
+}
+
+class _TimeTrainScreenState extends State<TimeTrainScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -89,26 +112,27 @@ class TimeTrainScreen extends StatelessWidget {
         body: SafeArea(
           child: Consumer<TimeTrainViewModel>(
             builder: (context, vm, child) {
-              if (vm.isGameComplete) {
-                vm.speak("Tebrikler! Tüm kartları doğru yerleştirdin. Sen bir zaman ustasısın!");
-                return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "🎉 Oyun Bitti! Harikasın!",
-                        style: TextStyle(
-                          fontSize: 26,
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
+            if (vm.isGameComplete && !vm.hasNavigated) {
+              vm.hasNavigated = true;
+              // Tek seferlik navigasyon
+              WidgetsBinding.instance.addPostFrameCallback((_) async{
+                final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+                timerVM.stopTimer();
 
-              return LayoutBuilder(
+                final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+                await vm2.saveGameResult(
+                    letter: 'günler',
+                    totalClicks: vm.totalClicks,
+                    correctClicks: vm.correctClicks,
+                    durationseconds: timerVM.totalSeconds,
+                    koleksiyonadi: 'zaman-yön'
+                );
+                Navigator.push(context,
+                  MaterialPageRoute(
+                  builder: (_) => Yonerge(text: "Asansör ile arkadaşımıza yardım edelim", page: ElevatorGamePage(),),
+            ),);});
+            }
+                return LayoutBuilder(
                 builder: (context, constraints) {
                   final isSmallScreen = constraints.maxWidth < 600;
                   return SingleChildScrollView(

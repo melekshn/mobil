@@ -1,5 +1,9 @@
 import 'package:disleksi_surum/utils/colors.dart';
+import 'package:disleksi_surum/view/okuma_ses/harf_dinle.dart';
+import 'package:disleksi_surum/view/okuma_ses/seslendirme_view.dart';
 import 'package:flutter/material.dart';
+
+import '../ortak_bosluk/yonerge.dart';
 
 class MenuViewSes extends StatelessWidget {
   const MenuViewSes({super.key});
@@ -24,19 +28,19 @@ class MenuViewSes extends StatelessWidget {
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
                 children: [
-                  _buildHomeButton(context, 'Seslendirme', Icons.abc, () {
+                  _buildHomeButton(context, 'Seslendirme', Icons.mic, () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const SizedBox(),
+                        builder: (_) => const Yonerge(text:"Dinlediğin cümleyi tekrar et" , page: SpeechPage()),
                       ),
                     );
                   }),
-                  _buildHomeButton(context, 'Boşluk doldurma', Icons.search, () {
+                  _buildHomeButton(context, 'Hangi harf', Icons.question_mark, () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const SizedBox(),
+                        builder: (_) => Yonerge(text:"Hangi harfi duyduysan onu seç" , page: LetterQuizPage()),
                       ),
                     );
                   }),

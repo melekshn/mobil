@@ -1,8 +1,12 @@
-import 'package:disleksi_surum/view/p/balon_view.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/Ders3.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/yonerge.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/balon_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../utils/colors.dart';
 import '../../viewModel/agac_view_model.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
 
 class HarfToplaPage extends StatefulWidget {
   final String hedefHarf;
@@ -28,13 +32,17 @@ class _HarfToplaPageState extends State<HarfToplaPage> {
       final viewModel = context.read<agacViewModel>();
       viewModel.setTextList(widget.harfListesi, widget.hedefHarf);
     });
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
   }
 
   @override
   Widget build(BuildContext context) {
     double widthscreen = MediaQuery.sizeOf(context).width;
     double heightscreen = MediaQuery.sizeOf(context).height;
-
+    debugPrint(widget.hedefHarf);
+    final secilenListe = tumListeler['${widget.hedefHarf.toUpperCase()}']!;
     return Scaffold(
       backgroundColor: AppColors.yesil,
       body: Consumer<agacViewModel>(
@@ -50,10 +58,28 @@ class _HarfToplaPageState extends State<HarfToplaPage> {
               .every((e) => !viewModel.visibleList[e.key]);
 
           if (allCollected) {
-            Future.microtask(() {
+
+            Future.microtask(() async{
+              final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+              timerVM.stopTimer();
+
+              final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+              await vm2.saveGameResult(
+                letter: widget.hedefHarf,
+                totalClicks: viewModel.totalClicks,
+                correctClicks: viewModel.correctClicks,
+                durationseconds: timerVM.totalSeconds,
+                koleksiyonadi: 'Harfler'
+              );
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (_) => const HarfBulPage(hedefHarf: 'p', harfListesi: ['p', 'b', 'd', 'p', 'b', 'd', 'd', 'p', 'b', 'p', 'p'],)),
+                MaterialPageRoute(builder: (_) => Yonerge(
+                  text: 'Hadi bakalım ${widget.hedefHarf} harflerini topla balonları özgür bırak',
+                  page:HarfBulPage(
+                      hedefHarf:secilenListe[2]['harf'] as String,
+                      harfListesi:List<String>.from(secilenListe[2]['list'] ,
+                      )), )),
+
               );
             });
           }

@@ -40,8 +40,9 @@ dependencies:
   flutter_tts: ^4.2.3
   video_player: ^2.10.0
   flame: ^1.32.0
-  flame_tiled: ^3.0.7
+  flame_tiled: ^3.0.8
   flame_audio: ^2.11.10
+  speech_to_text: ^7.3.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -52,6 +53,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.14.4
+
 
 flutter_launcher_icons:
   android: true
@@ -94,6 +96,13 @@ flutter:
      - assets/harfler/M/
      - assets/harfler/U/
      - assets/harfler/N/
+     - assets/harfler/A/
+     - assets/harfler/K/
+     - assets/harfler/C/
+     - assets/harfler/O/
+     - assets/harfler/R/
+     - assets/harfler/S/
+     - assets/harfler/Y/
      - assets/images/HUD/
      - assets/images/pixeladventure/
      - assets/images/pixeladventure/Background/
@@ -109,6 +118,8 @@ flutter:
      - assets/images/pixeladventure/Main Characters/
      - assets/images/pixeladventure/Main Characters/
      - assets/tiles/
+     - assets/veriler.json
+     - assets/images/write/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

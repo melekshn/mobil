@@ -1,4 +1,8 @@
+import 'package:disleksi_surum/view/b/menu_view.dart';
+import 'package:disleksi_surum/view/m/menu_view.dart';
+import 'package:disleksi_surum/view/n/menu_view.dart';
 import 'package:disleksi_surum/view/p/menu_view.dart';
+import 'package:disleksi_surum/view/u/menu_view.dart';
 import 'package:flutter/material.dart';
 
 import 'd/menu_view.dart';
@@ -60,12 +64,12 @@ class HarflerPage extends StatelessWidget {
                 imagePath: 'assets/harfler/B/b.jpeg',
                 label: 'B Harfi',
                 onPressed: () {
-                /*  Navigator.push(
+                Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => DHarfiSayfaKontrol(),
+                      builder: (_) => BMenuView(),
                     ),
-                  );*/
+                  );
                 },
               ),
               _buildMenuButton(
@@ -73,12 +77,12 @@ class HarflerPage extends StatelessWidget {
                 imagePath: 'assets/harfler/U/u.jpeg',
                 label: 'U Harfi',
                 onPressed: () {
-                 /* Navigator.push(
+                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => DHarfiSayfaKontrol(),
+                      builder: (_) => UMenuView(),
                     ),
-                  );*/
+                  );
                 },
               ),
 
@@ -87,12 +91,12 @@ class HarflerPage extends StatelessWidget {
                 imagePath: 'assets/harfler/M/m.jpeg',
                 label: 'M Harfi',
                 onPressed: () {
-                  /* Navigator.push(
+                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => DHarfiSayfaKontrol(),
+                      builder: (_) => MMenuView(),
                     ),
-                  );*/
+                  );
                 },
               ),
               _buildMenuButton(
@@ -100,12 +104,12 @@ class HarflerPage extends StatelessWidget {
                 imagePath: 'assets/harfler/N/n.jpeg',
                 label: 'N Harfi',
                 onPressed: () {
-                  /* Navigator.push(
+                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => DHarfiSayfaKontrol(),
+                      builder: (_) => NMenuView(),
                     ),
-                  );*/
+                  );
                 },
               ),
             ],

@@ -3,11 +3,26 @@ import 'package:disleksi_surum/view/sayilar/card_sayi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/farklibul_view_model.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
 
-class SayiFark2 extends StatelessWidget {
+class SayiFark2 extends StatefulWidget {
 
   const SayiFark2({super.key});
 
+  @override
+  State<SayiFark2> createState() => _SayiFark2State();
+}
+
+class _SayiFark2State extends State<SayiFark2> {
+  @override
+  void initState() {
+    super.initState();
+    // Timer başlat
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
+  }
   @override
   Widget build(BuildContext context) {
     double widthscreen = MediaQuery.sizeOf(context).width;
@@ -42,14 +57,25 @@ class SayiFark2 extends StatelessWidget {
                           width: widthscreen / 5,
                           height: widthscreen / 5,
                           child: GestureDetector(
-                            onTap: () {
+                            onTap: () async{
                               final vm = Provider.of<FarkliBulViewModel>(context,listen: false);
-                              vm.Kontrol(img[index],'0');
-                              if(vm.kontrol){
+                              vm.kontrolEt(img[index],'0');
+                              if(vm.isCorrect){
+                                final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+                                timerVM.stopTimer();
+
+                                final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+                                await vm2.saveGameResult(
+                                    letter: '0-8',
+                                    totalClicks: vm.totalClicks,
+                                    correctClicks: vm.correctClicks,
+                                    durationseconds: timerVM.totalSeconds,
+                                    koleksiyonadi: 'Sayilar'
+                                );
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) =>  CardPage(),
+                                    builder: (_) =>  RapidRecognitionScreen(),
                                   ),
                                 );
                               }

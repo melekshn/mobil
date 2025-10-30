@@ -1,7 +1,7 @@
-import 'package:disleksi_surum/view/sayilar/apple_number_game_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/eggviewmodel.dart';
+import 'card_sayi.dart';
 
 class EggInputPage extends StatefulWidget {
   const EggInputPage({super.key});
@@ -113,7 +113,7 @@ class _EggInputPageState extends State<EggInputPage> {
                       return ElevatedButton(
                         onPressed: vm.kontrol
                             ? () {
-                         Navigator.push(context, MaterialPageRoute(builder: (_)=>AppleNumberGame()));
+                         Navigator.push(context, MaterialPageRoute(builder: (_)=>RapidRecognitionScreen()));
                         }
                             : null,
                         style: ElevatedButton.styleFrom(

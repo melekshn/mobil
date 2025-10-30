@@ -2,11 +2,27 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/farklibul_view_model.dart';
+import '../../viewModel/game_result_viewmodel.dart';
+import '../../viewModel/game_timer_viewmodel.dart';
 import 'farklisayi2.dart';
 
-class SayiFark extends StatelessWidget {
+class SayiFark extends StatefulWidget {
 
   const SayiFark({super.key});
+
+  @override
+  State<SayiFark> createState() => _SayiFarkState();
+}
+
+class _SayiFarkState extends State<SayiFark> {
+  @override
+  void initState() {
+    super.initState();
+    // Timer başlat
+    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+    timerVM.reset();
+    timerVM.startTimer();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +39,7 @@ class SayiFark extends StatelessWidget {
           height: heightscreen,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/backgorund.png'),
+              image: AssetImage('assets/images/background.png'),
               fit: BoxFit.cover,
             ),
           ),
@@ -42,10 +58,22 @@ class SayiFark extends StatelessWidget {
                           width: widthscreen / 5,
                           height: widthscreen / 5,
                           child: GestureDetector(
-                            onTap: () {
+                            onTap: () async{
                               final vm = Provider.of<FarkliBulViewModel>(context,listen: false);
-                              vm.Kontrol(img[index],'6');
-                              if(vm.kontrol){
+                              vm.kontrolEt(img[index],'6');
+                              if(vm.isCorrect){
+                                final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+                                timerVM.stopTimer();
+
+                                final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+                                await vm2.saveGameResult(
+                                    letter: '6-9',
+                                    totalClicks: vm.totalClicks,
+                                    correctClicks: vm.correctClicks,
+                                    durationseconds: timerVM.totalSeconds,
+                                    koleksiyonadi: 'Sayilar'
+                                );
+                                vm.reset();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

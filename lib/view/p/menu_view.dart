@@ -1,10 +1,11 @@
 import 'package:disleksi_surum/utils/colors.dart';
-import 'package:disleksi_surum/view/p/agac.dart';
-import 'package:disleksi_surum/view/p/balon_view.dart';
-import 'package:disleksi_surum/view/p/farkli_bul.dart';
-import 'package:disleksi_surum/view/p/p_bosluk/p_ders1.dart';
-import 'package:disleksi_surum/view/p/p_bul/p_1.dart';
-import 'package:disleksi_surum/view/p/p_animation.dart';
+import 'package:disleksi_surum/utils/listname.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/agac.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/balon_view.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/Ders3.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/Ders2.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/Ders1.dart';
+import 'package:disleksi_surum/view/ortak_bosluk/animation.dart';
 import 'package:flutter/material.dart';
 
 class MenuView extends StatelessWidget {
@@ -34,12 +35,9 @@ class MenuView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const PStart(
+                        builder: (_) => const Start(
+                          harf: 'p',
                           video: 'assets/harfler/P/p.mp4',
-                          hedef: 'P',
-                          dogrulink: ['peynir'],
-                          linkler: ['domates','dkardanadam',],
-                          mesaj: 'P harfi ile başlayan resme tıkla',
                         ),
                       ),
                     );
@@ -48,28 +46,26 @@ class MenuView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => PDers1(hedefHarf: "p",
-                          dogruHarfResimleri: ['peynir',],
-                          digerHarfResimleri:
-                          ['yıldız',
-                            'domates'],
-                        mesaj: "P harfi ile başlayan resme tıkla",),
+                        builder: (_) => Ders1(
+                          list: listem['p']!, // null olma ihtimaline karşı '!' koyduk
+                          index: 0,
+                        ),
                       ),
                     );
                   }),
                   _buildHomeButton(context, 'P mi B mi ?', Icons.question_mark, () {
-                   Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const PHarfiSayfaKontrol(),
+                        builder: (_) => XHarfiSayfaKontrol(list: listem['p2']!),
                       ),
                     );
                   }),
                   _buildHomeButton(context, 'Farklı olanı bul!', Icons.priority_high, () {
-                   Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const PDers3(),
+                        builder: (_) => PDers3(harf: "p", img: ['p','b','b','b','b','b'],),
                       ),
                     );
                   }),
@@ -85,7 +81,7 @@ class MenuView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const HarfBulPage(hedefHarf: 'p', harfListesi: ['p', 'b', 'd', 'g', 'b', 'b', 'd', 'd', 'p','p'],)
+                          builder: (_) => const HarfBulPage(hedefHarf: 'p', harfListesi: ['p', 'b', 'd', 'g', 'b', 'b', 'd', 'd', 'p','p'],)
                       ),
                     );
                   }),
