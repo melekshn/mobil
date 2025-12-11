@@ -7,8 +7,8 @@ import '../../utils/colors.dart';
 import '../../viewModel/agac_view_model.dart';
 import '../../viewModel/game_result_viewmodel.dart';
 import '../../viewModel/game_timer_viewmodel.dart';
-
-class HarfToplaPage extends StatefulWidget {
+import '../home_harf.dart';
+class HarfToplaPage extends StatelessWidget {
   final String hedefHarf;
   final List<String> harfListesi;
 
@@ -19,30 +19,36 @@ class HarfToplaPage extends StatefulWidget {
   });
 
   @override
-  State<HarfToplaPage> createState() => _HarfToplaPageState();
-}
-
-class _HarfToplaPageState extends State<HarfToplaPage> {
-
-  @override
-  void initState() {
-    super.initState();
-    // Sayfa yüklendiğinde listeyi set et
-    Future.microtask(() {
-      final viewModel = context.read<agacViewModel>();
-      viewModel.setTextList(widget.harfListesi, widget.hedefHarf);
-    });
-    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
-    timerVM.reset();
-    timerVM.startTimer();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    double widthscreen = MediaQuery.sizeOf(context).width;
-    double heightscreen = MediaQuery.sizeOf(context).height;
-    debugPrint(widget.hedefHarf);
-    final secilenListe = tumListeler['${widget.hedefHarf.toUpperCase()}']!;
+    final widthscreen = MediaQuery.sizeOf(context).width;
+    final heightscreen = MediaQuery.sizeOf(context).height;
+
+    final secilenListe = tumListeler['${hedefHarf.toUpperCase()}']!;
+
+    // Listeyi ViewModel'e set et ve timer başlat
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = context.read<agacViewModel>();
+      viewModel.setTextList(harfListesi, hedefHarf);
+
+      final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+      timerVM.reset();
+      timerVM.startTimer();
+    });
+
+    final positions = [
+      Offset(widthscreen * 0.2, heightscreen * 0.015),
+      Offset(widthscreen * 0.3, heightscreen * 0.025),
+      Offset(widthscreen * 0.5, heightscreen * 0.055),
+      Offset(widthscreen * 0.7, heightscreen * 0.035),
+      Offset(widthscreen * 0.20, heightscreen * 0.18),
+      Offset(widthscreen * 0.28, heightscreen * 0.22),
+      Offset(widthscreen * 0.35, heightscreen * 0.20),
+      Offset(widthscreen * 0.55, heightscreen * 0.20),
+      Offset(widthscreen * 0.65, heightscreen * 0.22),
+      Offset(widthscreen * 0.72, heightscreen * 0.22),
+      Offset(widthscreen * 0.75, heightscreen * 0.1),
+    ];
+
     return Scaffold(
       backgroundColor: AppColors.yesil,
       body: Consumer<agacViewModel>(
@@ -58,45 +64,36 @@ class _HarfToplaPageState extends State<HarfToplaPage> {
               .every((e) => !viewModel.visibleList[e.key]);
 
           if (allCollected) {
-
-            Future.microtask(() async{
+            Future.microtask(() async {
               final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
               timerVM.stopTimer();
 
               final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
               await vm2.saveGameResult(
-                letter: widget.hedefHarf,
+                letter: hedefHarf,
                 totalClicks: viewModel.totalClicks,
                 correctClicks: viewModel.correctClicks,
                 durationseconds: timerVM.totalSeconds,
-                koleksiyonadi: 'Harfler'
+                koleksiyonadi: 'Harfler',
               );
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => Yonerge(
-                  text: 'Hadi bakalım ${widget.hedefHarf} harflerini topla balonları özgür bırak',
-                  page:HarfBulPage(
-                      hedefHarf:secilenListe[2]['harf'] as String,
-                      harfListesi:List<String>.from(secilenListe[2]['list'] ,
-                      )), )),
+              viewModel.totalClicks = 0;
 
-              );
+              if (context.mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Yonerge(
+                      text: 'Hadi bakalım $hedefHarf harflerini topla balonları özgür bırak',
+                      page: HarfBulPage(
+                        hedefHarf: secilenListe[2]['harf'] as String,
+                        harfListesi: List<String>.from(secilenListe[2]['list']),
+                      ),
+                    ),
+                  ),
+                );
+              }
             });
           }
-
-          final List<Offset> positions = [
-            Offset(widthscreen * 0.2, heightscreen * 0.015),
-            Offset(widthscreen * 0.3, heightscreen * 0.025),
-            Offset(widthscreen * 0.5, heightscreen * 0.055),
-            Offset(widthscreen * 0.7, heightscreen * 0.035),
-            Offset(widthscreen * 0.20, heightscreen * 0.18),
-            Offset(widthscreen * 0.28, heightscreen * 0.22),
-            Offset(widthscreen * 0.35, heightscreen * 0.20),
-            Offset(widthscreen * 0.55, heightscreen * 0.20),
-            Offset(widthscreen * 0.65, heightscreen * 0.22),
-            Offset(widthscreen * 0.72, heightscreen * 0.22),
-            Offset(widthscreen * 0.75, heightscreen * 0.1),
-          ];
 
           return Container(
             decoration: const BoxDecoration(
@@ -120,7 +117,6 @@ class _HarfToplaPageState extends State<HarfToplaPage> {
                     fit: BoxFit.cover,
                   ),
                 ),
-
                 // 🍎 Elmalar
                 ...List.generate(viewModel.textlist.length, (index) {
                   if (index >= positions.length) return const SizedBox();
@@ -160,6 +156,24 @@ class _HarfToplaPageState extends State<HarfToplaPage> {
                     ),
                   );
                 }),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => HarflerPage()),
+                      );
+                    },
+                    icon: const Icon(Icons.home, color: Colors.white, size: 36),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.orange.withAlpha(200),
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(8),
+                    ),
+                  ),
+                ),
               ],
             ),
           );

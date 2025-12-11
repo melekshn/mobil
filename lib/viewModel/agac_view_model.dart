@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class agacViewModel extends ChangeNotifier {
   int totalClicks = 0;
   final int correctClicks = 5;
-  List<String> textlist = [];
+  late List<String> textlist ;
   late String hedefHarf; // hangi harfi toplayacağız
   List<bool> visibleList = []; // hangi butonlar görünür
   List<String> _basket = [];

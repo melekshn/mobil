@@ -16,8 +16,8 @@ class GameResult {
     return {
       'totalClicks': totalClicks,
       'correctClicks': correctClicks,
-      'wrongClicks': wrongClicks, // opsiyonel, istersen burayı kaldırabilirsin
-      'accuracy': accuracy,       // opsiyonel, istersen dinamik hesaplayabilirsin
+      'wrongClicks': wrongClicks,
+      'accuracy': accuracy,
       'durationseconds': durationseconds,
     };
   }

@@ -1,3 +1,4 @@
+import 'package:disleksi_surum/view/home_harf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -5,8 +6,7 @@ import '../../utils/colors.dart';
 import '../../viewModel/balon_view_model.dart';
 import '../../viewModel/game_result_viewmodel.dart';
 import '../../viewModel/game_timer_viewmodel.dart';
-
-class HarfBulPage extends StatefulWidget {
+class HarfBulPage extends StatelessWidget {
   final String hedefHarf;
   final List<String> harfListesi;
 
@@ -17,42 +17,27 @@ class HarfBulPage extends StatefulWidget {
   });
 
   @override
-  State<HarfBulPage> createState() => _HarfBulPageState();
-}
-
-class _HarfBulPageState extends State<HarfBulPage> {
-
-  @override
-  void initState() {
-    super.initState();
-    // Sayfa açıldığında dikey moda sabitle
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
-    timerVM.reset();
-    timerVM.startTimer();
-  }
-
-  @override
-  void dispose() {
-    // Sayfa kapanınca tekrar yatay moda al
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    double widthscreen = MediaQuery.sizeOf(context).width;
-    double heightscreen = MediaQuery.sizeOf(context).height;
+    final widthscreen = MediaQuery.sizeOf(context).width;
+    final heightscreen = MediaQuery.sizeOf(context).height;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Dikey moda sabitle
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+
+      // Timer başlat
+      final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+      timerVM.reset();
+      timerVM.startTimer();
+    });
+
     return ChangeNotifierProvider<BalonViewModel>(
       create: (_) {
         final vm = BalonViewModel();
-        vm.setGame(widget.harfListesi, widget.hedefHarf);
+        vm.setGame(harfListesi, hedefHarf);
         return vm;
       },
       child: Consumer<BalonViewModel>(
@@ -68,20 +53,22 @@ class _HarfBulPageState extends State<HarfBulPage> {
             body: Stack(
               children: [
                 Container(
-                  width: MediaQuery.sizeOf(context).width,
-                  height: MediaQuery.sizeOf(context).height,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(
-                          'assets/images/background.png'
-                      ),fit: BoxFit.cover)
+                  width: widthscreen,
+                  height: heightscreen,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/background.png'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: heightscreen/4),
+                      SizedBox(height: heightscreen / 4),
                       Text(
                         'Hadi bakalım ${vm.hedefHarf} harfini bul!',
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style: const TextStyle(
+                            color: Colors.black, fontSize: 20),
                       ),
                       const Text(
                         'Balonlarını özgür bırak',
@@ -101,23 +88,29 @@ class _HarfBulPageState extends State<HarfBulPage> {
                             itemBuilder: (context, index) {
                               final color = vm.renkler[index];
                               return GestureDetector(
-                                onTap: () async{
+                                onTap: () async {
                                   vm.kontrolEt(index, context);
-                                  if(vm.ballon==0){
-                                    final timerVM = Provider.of<GameTimerViewModel>(context, listen: false);
+                                  if (vm.ballon == 0) {
+                                    final timerVM = Provider.of<GameTimerViewModel>(
+                                        context,
+                                        listen: false);
                                     timerVM.stopTimer();
 
-                                    final vm2 = Provider.of<GameResultViewModel>(context, listen: false);
+                                    final vm2 =
+                                    Provider.of<GameResultViewModel>(
+                                        context,
+                                        listen: false);
                                     await vm2.saveGameResult(
-                                      letter: widget.hedefHarf,
+                                      letter: hedefHarf,
                                       totalClicks: vm.totalClicks,
                                       correctClicks: vm.correctClicks,
                                       durationseconds: timerVM.totalSeconds,
-                                      koleksiyonadi: 'Harfler'
+                                      koleksiyonadi: 'Harfler',
                                     );
+                                    vm.totalClicks = 0;
+                                    timerVM.reset();
                                   }
-
-                                  } ,
+                                },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: color ?? Colors.white,
@@ -166,6 +159,24 @@ class _HarfBulPageState extends State<HarfBulPage> {
                       child: Image.asset('assets/images/ballon.png'),
                     ),
                   ),
+                Positioned(
+                  top: 20,
+                  right: 10,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => HarflerPage()),
+                      );
+                    },
+                    icon: const Icon(Icons.home, color: Colors.white, size: 36),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.orange.withAlpha(200),
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(8),
+                    ),
+                  ),
+                ),
               ],
             ),
           );

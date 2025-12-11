@@ -36,7 +36,7 @@ class UMenuView extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (_) => const Start(
-                          harf: 'd',
+                          harf: 'u',
                           video: 'assets/harfler/U/U.mp4',
                         ),
                       ),
@@ -62,7 +62,7 @@ class UMenuView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => PDers3(harf: 'b',img: ['p','p','p','p','p','b'],),
+                        builder: (_) => PDers3(harf: 'u',img: ['n','n','n','n','n','u'],),
                       ),
                     );
                   }),

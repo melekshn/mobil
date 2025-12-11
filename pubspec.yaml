@@ -53,6 +53,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.14.4
+  integration_test:
+    sdk: flutter
 
 
 flutter_launcher_icons:
